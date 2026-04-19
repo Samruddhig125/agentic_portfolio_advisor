@@ -57,8 +57,7 @@ This project is designed as a decision-support tool for basic investment plannin
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/portfolio-advisor.git
-cd portfolio-advisor
+https://github.com/Samruddhig125/agentic_portfolio_advisor.git
 ```
 
 ### 2. Create a virtual environment
