@@ -334,7 +334,7 @@ with st.sidebar:
 st.markdown("""
 <div class="hero-container">
     <div class="hero-title">💼 Portfolio Advisor AI</div>
-    <div class="hero-subtitle">Institutional-Grade Investment Intelligence</div>
+    <div class="hero-subtitle">Structured Intelligence for Smarter Investment Decisions</div>
     <div class="hero-description">Multi-agent AI system combining deterministic financial models with LLM-powered advisory insights.</div>
     <div class="pill-container">
         <div class="pill">⚡ Real-time Analysis</div>
