@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 planner_agent = Agent(
-    "ollama:llama3.2:3b",
+    model="ollama:llama3",
+    #provider=OllamaProvider(base_url="http://127.0.0.1:11434"),
     system_prompt="""
     You are a planning agent.
 
