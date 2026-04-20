@@ -1,8 +1,10 @@
-from pydantic import BaseModel, Field, model_validator
-from typing import Literal, List
+from pydantic import BaseModel, Field, model_validator  # Pydantic for data validation and structured models
+from typing import Literal, List  # Type hints for strict typing and predefined values
+
 
 
 class AIExplanation(BaseModel):
+    """LLM-generated human-readable financial explanations."""
     advisor_summary: str = Field(
         ...,
         description="Personalized portfolio summary for the investor."
@@ -25,28 +27,31 @@ class AIExplanation(BaseModel):
     )
 
 
+
 class UserProfile(BaseModel):
-    name: str = Field(..., min_length=2, max_length=50)
-    age: int = Field(..., ge=18, le=80)
-    monthly_income: float = Field(..., gt=0)
+    """Complete investor financial profile with validation."""
+    name: str = Field(..., min_length=2, max_length=50)  # Basic name validation
+    age: int = Field(..., ge=18, le=80)  # Working age range
+    monthly_income: float = Field(..., gt=0)  # Must be positive
     monthly_expenses: float = Field(..., ge=0)
     current_savings: float = Field(..., ge=0)
     liabilities: float = Field(..., ge=0)
-    investment_amount: float = Field(..., gt=0)
-    investment_horizon_years: int = Field(..., ge=1, le=40)
+    investment_amount: float = Field(..., gt=0)  # Investment capital
+    investment_horizon_years: int = Field(..., ge=1, le=40)  # Realistic timeframes
     financial_goal: Literal[
         "wealth creation",
         "retirement",
         "education",
         "home purchase",
         "emergency backup",
-    ]
-    risk_appetite: Literal["low", "medium", "high"]
+    ]  # Predefined goals
+    risk_appetite: Literal["low", "medium", "high"]  # Strict risk categories
     liquidity_need: Literal["low", "medium", "high"]
-    has_emergency_fund: bool
+    has_emergency_fund: bool  # Critical safety check
 
     @model_validator(mode="after")
     def validate_financials(self):
+        """Custom validation for financial realism."""
         if self.monthly_expenses > self.monthly_income * 2:
             raise ValueError(
                 "Monthly expenses look unrealistically high compared to income."
@@ -58,21 +63,26 @@ class UserProfile(BaseModel):
         return self
 
 
+
 class RiskAssessment(BaseModel):
-    risk_score: int = Field(..., ge=0, le=100)
+    """Investor risk profile with quantitative score and qualitative type."""
+    risk_score: int = Field(..., ge=0, le=100)  # 0-100 scale
     investor_type: Literal["conservative", "balanced", "growth", "aggressive"]
-    rationale: List[str]
+    rationale: List[str]  # Explanation of risk classification
+
 
 
 class PortfolioAllocation(BaseModel):
-    equity: float = Field(..., ge=0, le=100)
-    mutual_funds_etfs: float = Field(..., ge=0, le=100)
-    bonds_debt: float = Field(..., ge=0, le=100)
-    gold: float = Field(..., ge=0, le=100)
-    cash: float = Field(..., ge=0, le=100)
+    """Asset allocation percentages with 100% total validation."""
+    equity: float = Field(..., ge=0, le=100)  # Stocks
+    mutual_funds_etfs: float = Field(..., ge=0, le=100)  # Diversified funds
+    bonds_debt: float = Field(..., ge=0, le=100)  # Fixed income
+    gold: float = Field(..., ge=0, le=100)  # Inflation hedge
+    cash: float = Field(..., ge=0, le=100)  # Liquidity
 
     @model_validator(mode="after")
     def total_must_equal_100(self):
+        """Enforces portfolio must sum to exactly 100%."""
         total = (
             self.equity
             + self.mutual_funds_etfs
@@ -85,21 +95,25 @@ class PortfolioAllocation(BaseModel):
         return self
 
 
+
 class ScenarioOutcome(BaseModel):
-    market_crash: str
-    inflation_shock: str
-    stable_growth: str
-    emergency_withdrawal: str
+    """What-if scenarios for portfolio stress testing."""
+    market_crash: str      # Bear market performance
+    inflation_shock: str   # High inflation impact
+    stable_growth: str     # Normal market conditions
+    emergency_withdrawal: str  # Liquidity crisis
+
 
 
 class FinalAdvice(BaseModel):
-    summary: str
+    """Complete financial recommendation package."""
+    summary: str  # Executive overview
     risk_assessment: RiskAssessment
     allocation: PortfolioAllocation
-    reasons: List[str]
+    reasons: List[str]  # Why this allocation
     scenario_analysis: ScenarioOutcome
-    warnings: List[str]
-    next_steps: List[str]
-    confidence_score: int = Field(..., ge=0, le=100)
-    advisor_note: str
-    ai_explanation: AIExplanation
+    warnings: List[str]  # Red flags and cautions
+    next_steps: List[str]  # Actionable recommendations
+    confidence_score: int = Field(..., ge=0, le=100)  # Analysis quality (0-100)
+    advisor_note: str  # Professional closing remarks
+    ai_explanation: AIExplanation  # LLM-enhanced narrative
