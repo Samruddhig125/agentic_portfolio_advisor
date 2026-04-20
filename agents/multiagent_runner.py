@@ -12,7 +12,7 @@ from logic import (
 )
 from dotenv import load_dotenv
 
-# ✅ SAFE AGENT IMPORTS (relative)
+# AGENT IMPORTS 
 from .planner_agent import planner_agent
 from .explanation_agent import explanation_agent
 
@@ -23,7 +23,7 @@ OLLAMA_MODEL = "llama3"
 
 
 # -----------------------------
-# DIRECT OLLAMA CALL (WORKING)
+# OLLAMA CALL 
 # -----------------------------
 def _call_ollama(prompt: str) -> str:
     payload = {
@@ -41,7 +41,7 @@ def _call_ollama(prompt: str) -> str:
 
 
 # -----------------------------
-# PARSING HELPERS (UNCHANGED)
+# PARSING HELPERS
 # -----------------------------
 def _extract_string(text: str, key: str, fallback: str = "") -> str:
     pattern = rf'"{key}"\s*:\s*"(.*?)"(?=\s*[,}}])'
@@ -134,19 +134,19 @@ Portfolio: Equity {portfolio.equity}%, MF {portfolio.mutual_funds_etfs}%, Bonds 
 
 
 # -----------------------------
-# 🚀 FINAL MULTI-AGENT RUNNER
+#  MULTI-AGENT RUNNER
 # -----------------------------
 def run_multi_agent(user_input: str) -> dict:
     from parser import parse_profile_text
 
-    # 🧠 1. Planner Agent (SAFE)
+    #  1. Planner Agent 
     try:
         plan = planner_agent.run(user_input)
         plan_text = str(plan)
     except:
         plan_text = "Deterministic analysis pipeline executed."
 
-    # ⚙️ 2. Deterministic Core (UNCHANGED)
+    #  2. Deterministic Core (UNCHANGED)
     profile = parse_profile_text(user_input)
     risk = calculate_risk_assessment(profile)
     portfolio = generate_portfolio(profile, risk)
@@ -155,17 +155,17 @@ def run_multi_agent(user_input: str) -> dict:
     next_steps = generate_next_steps(profile)
     confidence_score = calculate_confidence_score(profile, warnings)
 
-    # 🤖 3. Your original LLM explanation
+    #  3. Your original LLM explanation
     parsed = _get_ai_explanation(profile, risk, portfolio, warnings)
 
-    # 🧾 4. Explanation Agent (optional enhancement)
+    #  4. Explanation Agent (optional enhancement)
     try:
         explanation_output = explanation_agent.run(parsed["plain_explanation"])
         explanation_text = str(explanation_output)
     except:
         explanation_text = parsed.get("plain_explanation")
 
-    # 🧱 5. Build structured output
+    #  5. Build structured output
     ai_explanation = AIExplanation(
         advisor_summary=parsed["advisor_summary"],
         allocation_explanation=parsed["allocation_explanation"],
@@ -192,7 +192,7 @@ def run_multi_agent(user_input: str) -> dict:
         ai_explanation=ai_explanation,
     )
 
-    # 📦 FINAL RESPONSE
+    #  FINAL RESPONSE
     return {
         "plan": plan_text,
         "finance": finance_output,
